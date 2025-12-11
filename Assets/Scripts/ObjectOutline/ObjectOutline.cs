@@ -2,7 +2,6 @@
 
 public class ObjectOutline : MonoBehaviour
 {
-    [SerializeField] private bool isUseOutline = true;
     [SerializeField] private LayerMask layerOutline;
     [SerializeField] private LayerMask layerDefault;
 
@@ -12,7 +11,6 @@ public class ObjectOutline : MonoBehaviour
         if (this.gameObject.layer != layer)
         {
             this.gameObject.layer = layer;
-            isUseOutline = true;
         }
     }
 
