@@ -39,17 +39,29 @@ public class PlayerInteract : MonoBehaviour
         {
             currentObjectOutline = hitInfo.collider.GetComponent<ObjectOutline>();
         }
-        
-        if (currentObjectOutline != null && baseObjectOutline ==null)
+        else
+        {
+            if (currentObjectOutline != null && baseObjectOutline != null)
+            {
+                currentObjectOutline.SetLayerDefault();
+                currentObjectOutline = null;
+                baseObjectOutline.SetLayerDefault();
+                baseObjectOutline = null;
+            }
+
+        }
+        if (currentObjectOutline != null && baseObjectOutline == null)
         {
             currentObjectOutline.SetLayerOutline();
             baseObjectOutline = currentObjectOutline;
         }
-        if(currentObjectOutline != baseObjectOutline)
+        if (currentObjectOutline != baseObjectOutline)
         {
             currentObjectOutline.SetLayerOutline();
             baseObjectOutline.SetLayerDefault();
             baseObjectOutline = null;
         }
+
+
     }
 }

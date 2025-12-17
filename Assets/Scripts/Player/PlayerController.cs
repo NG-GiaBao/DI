@@ -1,5 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
+
+public struct Test
+{
+    public int a;
+    public float b;
+}
+[Serializable]
+public struct Test2
+{
+    public string message;
+}
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,6 +26,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cinemaCamera;
     [SerializeField] private Animator animator;
 
+    private EventBus _events;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -24,6 +38,16 @@ public class PlayerController : MonoBehaviour
     {
         Init();
         Register();
+        Test t = new Test()
+        {
+            a = 5,
+            b = 3.2f
+        };
+        Test2 test2 = new Test2()
+        {
+            message = "Hello from PlayerController"
+        };
+        _events.Publish<PlayerController, Test>(t);
     }
     private void OnValidate()
     {
@@ -38,6 +62,11 @@ public class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         UnRegister();
+    }
+
+    public void Init(EventBus events)
+    {
+        _events = events;
     }
 
     #region Input Methods
