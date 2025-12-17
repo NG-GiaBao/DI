@@ -26,12 +26,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cinemaCamera;
     [SerializeField] private Animator animator;
 
+    [Header("References")]
+    [SerializeField] private PlayerInteract playerInteract;
+
     private EventBus _events;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
+        playerInteract = GetComponent<PlayerInteract>();
     }
 
     private void Start()
@@ -47,7 +51,7 @@ public class PlayerController : MonoBehaviour
         {
             message = "Hello from PlayerController"
         };
-        _events.Publish<PlayerController, Test>(t);
+        _events.Publish<PlayerController,Test>(t);
     }
     private void OnValidate()
     {
@@ -58,6 +62,11 @@ public class PlayerController : MonoBehaviour
     {
         playerMove.Move(cinemaCamera);
         playerJump.Jump();
+        if(playerInteract != null)
+        {
+            playerInteract.ShootRaycast();
+        }    
+           
     }
     private void OnDestroy()
     {
@@ -86,9 +95,16 @@ public class PlayerController : MonoBehaviour
 
     private void Init()
     {
-        playerJump.GetController(characterController);
-        playerMove.GetController(characterController);
-        playerAnim.GetAnimator(animator);
+        if(characterController != null)
+        {
+            playerJump.GetController(characterController);
+            playerMove.GetController(characterController);
+        }    
+        if(animator != null)
+        {
+            playerAnim.GetAnimator(animator);
+        }    
+        
     }
     private void Register()
     {

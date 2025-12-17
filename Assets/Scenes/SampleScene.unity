@@ -48633,6 +48633,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1427969702093592894, guid: d9e17fd99893b9e4f8f33c0433ecc7aa,
         type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 1427969702093592894, guid: d9e17fd99893b9e4f8f33c0433ecc7aa,
+        type: 3}
       propertyPath: interactableLayer.m_Bits
       value: 1536
       objectReference: {fileID: 0}

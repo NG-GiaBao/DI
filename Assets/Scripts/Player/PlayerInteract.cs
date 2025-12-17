@@ -17,17 +17,16 @@ public class PlayerInteract : MonoBehaviour
 
     private void Start()
     {
-        playerCamera = Camera.main;
         offsetRaycast = new Vector3(Screen.width / 2, Screen.height / 2, 0);
     }
 
-    private void Update()
+    public void ShootRaycast()
     {
-        ShootRaycast();
-    }
-
-    private void ShootRaycast()
-    {
+        if(playerCamera == null)
+        {
+            Debug.LogWarning("PlayerInteract: playerCamera is not assigned.");
+            return;
+        }
         Ray ray = playerCamera.ScreenPointToRay(offsetRaycast);
 
         if (IsShowDebugRay)
