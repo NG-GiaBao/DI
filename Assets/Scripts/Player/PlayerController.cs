@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.iOS;
 
 public struct Test
 {
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private PlayerInteract playerInteract;
+
+    [SerializeField] private CanvasGroup canvasGroup;
 
     private EventBus _events;
 
@@ -73,11 +76,25 @@ public class PlayerController : MonoBehaviour
         UnRegister();
     }
 
+    #region Initialization
     public void Init(EventBus events)
     {
         _events = events;
     }
+    private void Init()
+    {
+        if (characterController != null)
+        {
+            playerJump.GetController(characterController);
+            playerMove.GetController(characterController);
+        }
+        if (animator != null)
+        {
+            playerAnim.GetAnimator(animator);
+        }
 
+    }
+    #endregion
     #region Input Methods
     public void OnMove(InputValue value)
     {
@@ -92,20 +109,23 @@ public class PlayerController : MonoBehaviour
         Vector2 valueInput = value.Get<Vector2>();
         playerLook.Look(valueInput, transform, cinemaCamera);
     }
-
-    private void Init()
+    public void OnPick()
     {
-        if(characterController != null)
+        if(playerInteract != null)
         {
-            playerJump.GetController(characterController);
-            playerMove.GetController(characterController);
-        }    
-        if(animator != null)
+            playerInteract.Pickup();
+        }
+    }    
+    public void OnClick()
+    {
+        if(playerInteract.IsInteractingNPC)
         {
-            playerAnim.GetAnimator(animator);
+            ShowCanvas(true);
         }    
-        
-    }
+    }    
+    #endregion
+    #region Event Methods
+
     private void Register()
     {
         playerMove.OnPlayerMove += UpdateAnim;
@@ -115,8 +135,8 @@ public class PlayerController : MonoBehaviour
     {
         playerMove.OnPlayerMove -= UpdateAnim;
     }
-    #endregion
 
+    #endregion
     #region Collider Methods
     private void OnTriggerEnter(Collider other)
     {
@@ -133,8 +153,17 @@ public class PlayerController : MonoBehaviour
         }
     }
     #endregion
+    #region Another Methods
     private void UpdateAnim()
     {
         playerAnim.UpdateAnimMove(playerMove.IsMoving);
     }
+
+    private void ShowCanvas(bool isShow)
+    {
+        canvasGroup.alpha = isShow ? 1 : 0;
+        canvasGroup.blocksRaycasts = isShow;
+        canvasGroup.interactable = isShow;
+    }
+    #endregion
 }

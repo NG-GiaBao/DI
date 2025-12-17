@@ -16,6 +16,11 @@ public class ObjectOutline : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        SetLayerDefault();
+    }
+
     public void Init(EventBus events)
     {
         _events = events;
@@ -41,6 +46,10 @@ public class ObjectOutline : MonoBehaviour
             this.gameObject.layer = layer;
         }
     }
+    public void SetupDisable()
+    {
+        gameObject.SetActive(false);
+    }    
 
     private void OnTest(Test t)
     {
