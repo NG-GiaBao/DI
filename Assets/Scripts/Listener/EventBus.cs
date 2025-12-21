@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class EventBus
+public  class EventBus
 {
-    private readonly Dictionary<Type, List<Delegate>> eventTable = new();
-    public Dictionary<Type, List<Delegate>> EventTable => eventTable;
+    private  readonly Dictionary<Type, List<Delegate>> eventTable = new();
+    public  Dictionary<Type, List<Delegate>> EventTable => eventTable;
 
-    private readonly Dictionary<Type, object> cachePulish = new();
+    private  readonly Dictionary<Type, object> cachePulish = new();
 #if UNITY_EDITOR
-    private readonly Dictionary<Type, object> lastEventData = new();
-    private readonly List<PublishRecord> publishHistory = new();
+    private  readonly Dictionary<Type, object> lastEventData = new();
+    private  readonly List<PublishRecord> publishHistory = new();
 
-    public IReadOnlyDictionary<Type, object> DebugLastEventData => lastEventData;
-    public IReadOnlyList<PublishRecord> DebugPublishHistory => publishHistory;
+    public  IReadOnlyDictionary<Type, object> DebugLastEventData => lastEventData;
+    public  IReadOnlyList<PublishRecord> DebugPublishHistory => publishHistory;
 #endif
-    public void Subscribe<T>(Action<T> funtion)
+    public  void Subscribe<T>(Action<T> funtion)
     {
         Type eventType = typeof(T);
         if (!eventTable.ContainsKey(eventType))
@@ -37,7 +38,7 @@ public class EventBus
         }
     }
 
-    public void Unsubscribe<T>(Action<T> listener)
+    public  void Unsubscribe<T>(Action<T> listener)
     {
         Type eventType = typeof(T);
         if (eventTable.ContainsKey(eventType))
@@ -45,7 +46,7 @@ public class EventBus
             eventTable[eventType].Remove(listener);
         }
     }
-    public void Publish<Tbase, T>(T eventData) 
+    public  void Publish<Tbase, T>(T eventData)
     {
         Type eventType = typeof(T);
         Type baseType = typeof(Tbase);
@@ -73,10 +74,6 @@ public class EventBus
             eventTable[eventType] = new List<Delegate>();
             cachePulish[eventType] = eventData;
         }
-    }
-    public void Clear()
-    {
-        eventTable.Clear();
     }
 }
 

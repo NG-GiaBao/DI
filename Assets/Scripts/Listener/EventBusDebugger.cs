@@ -2,10 +2,10 @@
 
 public class EventBusDebugger : MonoBehaviour
 {
-   public EventBus Bus { get; private set; }
+    public EventBus Bus { get; private set; }
 
     public void Bind(EventBus bus)
     {
-        Bus= bus;
-    }    
+        Bus = bus;
+    }
 }

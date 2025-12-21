@@ -1,18 +1,9 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.iOS;
 
-public struct Test
-{
-    public int a;
-    public float b;
-}
-[Serializable]
-public struct Test2
-{
-    public string message;
-}
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -30,32 +21,23 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerInteract playerInteract;
 
-    [SerializeField] private CanvasGroup canvasGroup;
-
-    private EventBus _events;
+    private CoreContext context;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         playerInteract = GetComponent<PlayerInteract>();
+        Register.RegisterRef<PlayerController>(this);
     }
 
     private void Start()
     {
         Init();
-        Register();
-        Test t = new Test()
-        {
-            a = 5,
-            b = 3.2f
-        };
-        Test2 test2 = new Test2()
-        {
-            message = "Hello from PlayerController"
-        };
-        _events.Publish<PlayerController,Test>(t);
+        Subscrision();
+        Invoke(nameof(Delay), 5f);
     }
+
     private void OnValidate()
     {
         validTags.Syns();
@@ -65,22 +47,27 @@ public class PlayerController : MonoBehaviour
     {
         playerMove.Move(cinemaCamera);
         playerJump.Jump();
-        if(playerInteract != null)
+        if (playerInteract != null)
         {
             playerInteract.ShootRaycast();
-        }    
-           
+        }
+
     }
     private void OnDestroy()
     {
-        UnRegister();
+        UnSubscrision();
     }
 
-    #region Initialization
-    public void Init(EventBus events)
+    public void Delay()
     {
-        _events = events;
+        context.UiService.Hide<SliderView>();
     }
+
+    public void InitCoreContext(CoreContext context)
+    {
+        this.context = context;
+    }
+
     private void Init()
     {
         if (characterController != null)
@@ -94,7 +81,7 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-    #endregion
+
     #region Input Methods
     public void OnMove(InputValue value)
     {
@@ -111,27 +98,27 @@ public class PlayerController : MonoBehaviour
     }
     public void OnPick()
     {
-        if(playerInteract != null)
+        if (playerInteract != null)
         {
             playerInteract.Pickup();
         }
-    }    
+    }
     public void OnClick()
     {
-        if(playerInteract.IsInteractingNPC)
+        if (playerInteract.IsInteractingNPC)
         {
-            ShowCanvas(true);
-        }    
-    }    
+            //ShowCanvas(true);
+        }
+    }
     #endregion
     #region Event Methods
 
-    private void Register()
+    private void Subscrision()
     {
         playerMove.OnPlayerMove += UpdateAnim;
     }
 
-    private void UnRegister()
+    private void UnSubscrision()
     {
         playerMove.OnPlayerMove -= UpdateAnim;
     }
@@ -159,11 +146,5 @@ public class PlayerController : MonoBehaviour
         playerAnim.UpdateAnimMove(playerMove.IsMoving);
     }
 
-    private void ShowCanvas(bool isShow)
-    {
-        canvasGroup.alpha = isShow ? 1 : 0;
-        canvasGroup.blocksRaycasts = isShow;
-        canvasGroup.interactable = isShow;
-    }
     #endregion
 }

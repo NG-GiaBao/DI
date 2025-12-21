@@ -19,8 +19,8 @@ public class EventBusEditor : Editor
         EventBusDebugger dbg = (EventBusDebugger)target;
         EventBus bus = dbg.Bus;
 
-        if(bus == null)
-    {
+        if (bus == null)
+        {
             EditorGUILayout.HelpBox(
                 "EventBus chưa được bind. Chỉ khả dụng khi Play Mode.",
                 MessageType.Info
