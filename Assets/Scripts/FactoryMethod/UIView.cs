@@ -10,6 +10,10 @@ public class UIView : MonoBehaviour
     [SerializeField] private List<string> uiElementTypeList = new();
     private const string uiElementPath = "UI";
 
+    private void Awake()
+    {
+        Register.RegisterRef<UIView>(this);
+    }
     public GameObject LoadView(Type type)
     {
         string name = type.Name;
@@ -39,21 +43,6 @@ public class UIView : MonoBehaviour
         {
             Debug.LogWarning($"The prefab {obj.name} does not contain a UiElement component.");
         }
-
-
-        //GameObject prefabs = Instantiate(uiElements[type], transform);
-        //if (prefabs.TryGetComponent(out UiElement uiElement))
-        //{
-        //    uiElement.Show();
-        //}
-        //else
-        //{
-        //    Debug.LogWarning($"The prefab {prefabs.name} does not contain a UiElement component.");
-        //}
-        //if (data != null)
-        //{
-        //    uiElement.OnStartData(data);
-        //}
     }
     public void HideUi<T>() where T : UiElement
     {

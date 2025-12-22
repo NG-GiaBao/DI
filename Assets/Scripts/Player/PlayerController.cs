@@ -35,7 +35,6 @@ public class PlayerController : MonoBehaviour
     {
         Init();
         Subscrision();
-        Invoke(nameof(Delay), 5f);
     }
 
     private void OnValidate()
@@ -58,10 +57,7 @@ public class PlayerController : MonoBehaviour
         UnSubscrision();
     }
 
-    public void Delay()
-    {
-        context.UiService.Hide<SliderView>();
-    }
+   
 
     public void InitCoreContext(CoreContext context)
     {
