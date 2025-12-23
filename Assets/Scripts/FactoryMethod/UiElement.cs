@@ -22,7 +22,6 @@ public class UiElement : MonoBehaviour
     }   
     public void Hide()
     {
-        Debug.Log("Hiding UI Element: " + gameObject.name);
         _canvasGroup.alpha = 0;
         _canvasGroup.interactable = false;
         _canvasGroup.blocksRaycasts = false;

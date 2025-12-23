@@ -29,11 +29,11 @@ public static class Register
         var type = typeof(T);
         if (mapRef.TryGetValue(type, out var component))
         {
-            action((T)component);
+            action(component as T);
         }
         else
         {
-            actionRef[type] = c => action((T)c);
+            actionRef[type] = c => action(c as T);
         }
     }
 }

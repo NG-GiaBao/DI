@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     {
         if (gameState == GameState.Start)
         {
-            uiService.Show<CrosshairView>();
+            uiService.Show<CrosshairViewController>();
         }
     }
 

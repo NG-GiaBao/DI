@@ -4,4 +4,9 @@ using UnityEngine.UI;
 public class CrosshairView : UiElement
 {
     [SerializeField] private Image crosshairImage;
+
+    public void ChangeImage(Sprite image)
+    {
+        crosshairImage.sprite = image;
+    }
 }

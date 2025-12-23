@@ -7,8 +7,8 @@ public class GameBootstrap : MonoBehaviour
     [Space()]
     [SerializeField] private PlayerController player;
     [SerializeField] private EventBusDebugger debugger;
-    [SerializeField] private UIView uiView;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private Transform mainCanvas;
 
     [Header("Systems")]
     [Space()]
@@ -26,7 +26,7 @@ public class GameBootstrap : MonoBehaviour
 
     private void OnInitialized()
     {
-        _core = new CoreContext(uiView);
+        _core = new CoreContext(mainCanvas);
     }
     private void OnInjectComp()
     {
@@ -39,10 +39,10 @@ public class GameBootstrap : MonoBehaviour
     {
         Register.GetRef<PlayerController>(OnGetPlayer);
         Register.GetRef<GameManager>(OnGetGameManager);
-        Register.GetRef<UIView>(OnGetUIView);
+        Register.GetRef<EventBusDebugger>(OnGetEventBusDebugger);
     }
     private void OnGetPlayer(PlayerController player) => this.player = player;
     private void OnGetGameManager(GameManager gameManager) => this.gameManager = gameManager;
-    private void OnGetUIView(UIView uIView) => this.uiView = uIView;
+    private void OnGetEventBusDebugger(EventBusDebugger debugger) => this.debugger = debugger;
 
 }
