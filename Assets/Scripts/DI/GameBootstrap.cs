@@ -30,9 +30,11 @@ public class GameBootstrap : MonoBehaviour
     }
     private void OnInjectComp()
     {
-        player.InitCoreContext(_core);
+        debugger.Bind(_core.Events);
         gameManager.Inject(_core.UiService);
         gameManager.Init();
+        player.InitCoreContext(_core);
+      
     }
 
     private void OnGetAllRef()
