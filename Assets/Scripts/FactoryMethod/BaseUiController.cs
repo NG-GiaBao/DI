@@ -6,6 +6,7 @@ public class BaseUiController<TVIew> : IUiController where TVIew : UiElement
     public void Init(UiElement uiElement)
     {
         view = uiElement as TVIew;
+        OnInitialize();
     }
 
     protected virtual void OnInitialize() { }

@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Inject(UiService uiService)
+    public void OnInject(UiService uiService)
     {
         this.uiService = uiService;
     }    

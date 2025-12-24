@@ -4,15 +4,13 @@
 public class UiElement : MonoBehaviour
 {
     [SerializeField] protected CanvasGroup _canvasGroup;
+    
 
     private void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>();
     }
    
-    public virtual void OnStartData(object data)
-    {
-    }
     public void Show()
     {
         _canvasGroup.alpha = 1;

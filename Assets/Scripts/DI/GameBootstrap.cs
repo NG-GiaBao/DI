@@ -8,7 +8,9 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private PlayerController player;
     [SerializeField] private EventBusDebugger debugger;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private DialogManager dialogManager;
     [SerializeField] private Transform mainCanvas;
+    
 
     [Header("Systems")]
     [Space()]
@@ -30,10 +32,12 @@ public class GameBootstrap : MonoBehaviour
     }
     private void OnInjectComp()
     {
-        debugger.Bind(_core.Events);
-        gameManager.Inject(_core.UiService);
+        debugger.OnInject(_core.Events);
+        gameManager.OnInject(_core.UiService);
         gameManager.Init();
-        player.InitCoreContext(_core);
+        dialogManager.OnInject(_core);
+        dialogManager.OnInit();
+        player.OnInject(_core);
       
     }
 
@@ -42,9 +46,12 @@ public class GameBootstrap : MonoBehaviour
         Register.GetRef<PlayerController>(OnGetPlayer);
         Register.GetRef<GameManager>(OnGetGameManager);
         Register.GetRef<EventBusDebugger>(OnGetEventBusDebugger);
+        Register.GetRef<DialogManager>(OnGetDialogObejct);
+        
     }
     private void OnGetPlayer(PlayerController player) => this.player = player;
     private void OnGetGameManager(GameManager gameManager) => this.gameManager = gameManager;
     private void OnGetEventBusDebugger(EventBusDebugger debugger) => this.debugger = debugger;
+    private void OnGetDialogObejct(DialogManager dialogManager) => this.dialogManager = dialogManager;
 
 }

@@ -7,7 +7,7 @@ public class EventBusDebugger : MonoBehaviour
     {
         Register.RegisterRef<EventBusDebugger>(this);
     }
-    public void Bind(EventBus bus)
+    public void OnInject(EventBus bus)
     {
         Bus = bus;
     }

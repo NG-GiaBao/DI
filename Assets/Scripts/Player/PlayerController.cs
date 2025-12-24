@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 
@@ -22,6 +20,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerInteract playerInteract;
 
     private CoreContext context;
+
+    public struct OnEventClick { }
 
     private void Awake()
     {
@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
 
    
 
-    public void InitCoreContext(CoreContext context)
+    public void OnInject(CoreContext context)
     {
         this.context = context;
     }
@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
     {
         if (playerInteract.IsInteractingNPC)
         {
-            //ShowCanvas(true);
+            context.Events.Publish<PlayerController, OnEventClick>();
         }
     }
     #endregion
