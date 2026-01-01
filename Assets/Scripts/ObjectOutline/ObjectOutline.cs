@@ -9,8 +9,6 @@ public class ObjectOutline : MonoBehaviour
     {
         Register.RegisterRef<ObjectOutline>(this);
     }
-
-
     public void SetLayerOutline()
     {
         int layer = LayerMarkHelper.ExtractSingleLayer(layerOutline);
@@ -19,7 +17,6 @@ public class ObjectOutline : MonoBehaviour
             this.gameObject.layer = layer;
         }
     }
-
     public void SetLayerDefault()
     {
         int layer = LayerMarkHelper.ExtractSingleLayer(layerDefault);
@@ -28,10 +25,11 @@ public class ObjectOutline : MonoBehaviour
             this.gameObject.layer = layer;
         }
     }
-    public void SetupDisable()
+    public void SetPickItem(Transform container)
     {
-        gameObject.SetActive(false);
-    }    
+        transform.SetParent(container, false);
+        transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+    }
 
-    
+
 }

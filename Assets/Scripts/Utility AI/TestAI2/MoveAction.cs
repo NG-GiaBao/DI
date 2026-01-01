@@ -1,52 +1,49 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.AI;
 
 [Serializable]
-public class MoveAction : BaseState<NPCBehavior>
+public class MoveAction : BaseState
 {
-    private NavMeshAgent agent;
-    private Transform chairPos;
-    private Animator animator;
-    public MoveAction(NPCBehavior owner, StateMachine<NPCBehavior> fsm) : base(owner, fsm)
+    private readonly IMover agent;
+    private readonly Transform chairPos;
+    private readonly Transform current;
+    private readonly IAnimationController animator;
+    private readonly IRotate rotate;
+    public MoveAction(FsmContext context, Transform target,Transform current)
     {
+        agent = context.Mover;
+        animator = context.Controller;
+        chairPos = target;
+        rotate = context.Rotate;
+        this.current = current;
     }
 
     public override void Enter()
     {
-        animator.SetBool("Run", true);
-        MoveTo(chairPos.position);
+       
+        agent.SetUpdateRotation(true);
+        animator.SetRun(true);
+        agent.MoveTo(chairPos.position);
     }
 
     public override void Exit()
     {
-        animator.SetBool("Sit", true);
-        agent.isStopped = false;
+        animator.SetSit(true);
+        agent.Stop();
     }
 
-    public override void Update()
+    public override NameAction? Update()
     {
-        if (ReachedDestination())
+        if (agent.ReachedDestination())
         {
-            Debug.Log($"Arrive {ReachedDestination()}");
-            fsm.RequestAction(NameAction.Idle);
-        }
-    }
-    public void Init(NavMeshAgent agent, Transform chairPos , Animator animator)
-    {
-        this.agent = agent;
-        this.chairPos = chairPos;
-        this.animator= animator;
-    }
-    public bool ReachedDestination()
-    {
-        return !agent.pathPending &&
-               agent.remainingDistance <= agent.stoppingDistance;
-    }
-    public void MoveTo(Vector3 position)
-    {
-        agent.isStopped = false;
-        agent.SetDestination(position);
-    }
+            agent.SetUpdateRotation(false);
+            rotate.Rotate();
+            if (rotate.IsRotate())
+            {
+                return NameAction.Idle;
+            }
 
+        }
+        return null;
+    }
 }

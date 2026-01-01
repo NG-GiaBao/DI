@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
@@ -12,6 +11,8 @@ public class PlayerInteract : MonoBehaviour
 
     [SerializeField] private ObjectOutline currentObjectOutline;
     [SerializeField] private ObjectOutline baseObjectOutline;
+
+    [SerializeField] private Transform itemContainer;
 
 
     [Header("Show Raycast Settings")]
@@ -32,7 +33,8 @@ public class PlayerInteract : MonoBehaviour
         if (currentObjectOutline != null)
         {
             objOutlineList.Add(currentObjectOutline);
-            currentObjectOutline.SetupDisable();
+
+            currentObjectOutline.SetPickItem(itemContainer);
         }
     }
 
@@ -95,4 +97,8 @@ public class PlayerInteract : MonoBehaviour
             IsInteractingNPC = false;
         }
     }
+    private void RaycastPutItem()
+    {
+
+    }    
 }

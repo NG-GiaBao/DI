@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class IdleAction : BaseState<NPCBehavior>
+public class IdleAction : BaseState
 {
-    public IdleAction(NPCBehavior owner, StateMachine<NPCBehavior> fsm) : base(owner, fsm)
+    public IdleAction( ) 
     {
     }
 
@@ -16,8 +16,8 @@ public class IdleAction : BaseState<NPCBehavior>
         
     }
 
-    public override void Update()
+    public override NameAction? Update()
     {
-       
+       return null;
     }
 }
