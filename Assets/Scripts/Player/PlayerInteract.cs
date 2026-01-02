@@ -6,6 +6,7 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private Camera playerCamera;
     [SerializeField] private LayerMask layerObject;
     [SerializeField] private LayerMask layerNPC;
+    [SerializeField] private LayerMask layerPutItem;
     [SerializeField] private float distanceRaycast = 5f;
     [SerializeField] private Vector3 offsetRaycast;
 
@@ -21,6 +22,9 @@ public class PlayerInteract : MonoBehaviour
 
     [SerializeField] private List<ObjectOutline> objOutlineList = new();
     [field: SerializeField] public bool IsInteractingNPC { get; private set; } = false;
+    [field: SerializeField] public bool IsPutItem { get; private set; }
+    [SerializeField] private Vector3 putItemPos;
+    [SerializeField] private Transform objPutItem;
 
 
     private void Start()
@@ -30,11 +34,21 @@ public class PlayerInteract : MonoBehaviour
 
     public void Pickup()
     {
+        if (IsPutItem)
+        {
+            var currentItem = objOutlineList[0];
+            currentItem.transform.SetParent(objPutItem, true);
+            CalculateOffset(currentItem);
+            IsPutItem = false;
+            return;
+        }
+
         if (currentObjectOutline != null)
         {
             objOutlineList.Add(currentObjectOutline);
-
             currentObjectOutline.SetPickItem(itemContainer);
+            currentObjectOutline.ResetScale();
+            IsPutItem = true;
         }
     }
 
@@ -53,6 +67,7 @@ public class PlayerInteract : MonoBehaviour
         }
         RaycastObject(ray);
         RaycastNPC(ray);
+        RaycastPutItem(ray);
 
     }
     private void RaycastObject(Ray ray)
@@ -97,8 +112,25 @@ public class PlayerInteract : MonoBehaviour
             IsInteractingNPC = false;
         }
     }
-    private void RaycastPutItem()
+    private void RaycastPutItem(Ray ray)
     {
-
-    }    
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, distanceRaycast, layerPutItem))
+        {
+            Debug.Log($"Hit Put {hitInfo.point}");
+            putItemPos = hitInfo.point;
+            objPutItem = hitInfo.transform;
+        }
+    }
+    private void CalculateOffset(ObjectOutline obj)
+    {
+        float yOffset = 0f;
+        Collider itemCol = obj.GetComponent<Collider>();
+        {
+            if (itemCol != null)
+            {
+                yOffset = itemCol.bounds.extents.y;
+            }
+        }
+        obj.transform.SetPositionAndRotation(putItemPos + (Vector3.up * yOffset), Quaternion.identity);
+    }
 }

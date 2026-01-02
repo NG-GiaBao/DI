@@ -4,10 +4,12 @@ public class ObjectOutline : MonoBehaviour
 {
     [SerializeField] private LayerMask layerOutline;
     [SerializeField] private LayerMask layerDefault;
+    private Vector3 initialScale;
 
     private void Awake()
     {
         Register.RegisterRef<ObjectOutline>(this);
+        initialScale = transform.localScale;
     }
     public void SetLayerOutline()
     {
@@ -30,6 +32,10 @@ public class ObjectOutline : MonoBehaviour
         transform.SetParent(container, false);
         transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
+    public void ResetScale()
+    {
+        transform.localScale = initialScale;
+    }    
 
 
 }
