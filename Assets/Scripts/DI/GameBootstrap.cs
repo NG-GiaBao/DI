@@ -1,5 +1,4 @@
-﻿using AYellowpaper.SerializedCollections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameBootstrap : MonoBehaviour
 {
@@ -10,7 +9,6 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private GameManager gameManager;
     [SerializeField] private DialogManager dialogManager;
     [SerializeField] private Transform mainCanvas;
-    
 
     [Header("Systems")]
     [Space()]
@@ -25,7 +23,7 @@ public class GameBootstrap : MonoBehaviour
     {
         OnInjectComp();
     }
-
+    
     private void OnInitialized()
     {
         _core = new CoreContext(mainCanvas);
@@ -33,8 +31,8 @@ public class GameBootstrap : MonoBehaviour
     private void OnInjectComp()
     {
         debugger.OnInject(_core.Events);
-        gameManager.OnInject(_core.UiService);
-        gameManager.Init();
+        gameManager.OnInject(_core.UiService,dialogManager);
+        gameManager.OnInit();
         dialogManager.OnInject(_core);
         dialogManager.OnInit();
         player.OnInject(_core);

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public enum GameState
 {
@@ -9,18 +10,34 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private UiService uiService;
+    [SerializeField] private DialogManager dialogManager;
     [SerializeField] private GameState gameState;
 
     private void Awake()
     {
         Register.RegisterRef<GameManager>(this);
     }
-  
-    public void Init()
+    private void Update()
     {
-        GameStart();
+        OnUpdate();
     }
 
+    public void OnInit()
+    {
+        Sequence sequence = DOTween.Sequence();
+
+        sequence.AppendInterval(0.5f);
+
+
+
+    }
+
+    public void OnUpdate()
+    {
+      
+        
+    }    
+   
     private void GameStart()
     {
         if (gameState == GameState.Start)
@@ -28,9 +45,15 @@ public class GameManager : MonoBehaviour
             uiService.Show<CrosshairViewController>();
         }
     }
+    private void TestAwait()
+    {
+        Debug.Log("Test Await Dialog Show");
+        uiService.Show<DialogViewController>(dialogManager.GetDialog());
+    }
 
-    public void OnInject(UiService uiService)
+    public void OnInject(UiService uiService , DialogManager dialogManager)
     {
         this.uiService = uiService;
-    }    
+        this.dialogManager = dialogManager;
+    }
 }

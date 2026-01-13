@@ -41,7 +41,11 @@ public class DialogManager : MonoBehaviour
         
     private void HandlerEventOnClick(PlayerController.OnEventClick onEventClick)
     {
-        core.UiService.Show<DialogViewController>(motherDialog);
+        //core.UiService.Show<DialogViewController>(motherDialog);
+    }
+    public DialogSO GetDialog()
+    {
+        return motherDialog;
     }
 
 }

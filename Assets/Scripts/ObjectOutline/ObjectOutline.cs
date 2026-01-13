@@ -4,7 +4,7 @@ public class ObjectOutline : MonoBehaviour
 {
     [SerializeField] private LayerMask layerOutline;
     [SerializeField] private LayerMask layerDefault;
-    private Vector3 initialScale;
+    [SerializeField] private Vector3 initialScale;
 
     private void Awake()
     {

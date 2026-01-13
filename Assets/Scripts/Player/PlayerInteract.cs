@@ -1,136 +1,151 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
+    [Header("Raycast")]
     [SerializeField] private Camera playerCamera;
+    [SerializeField] private float distanceRaycast = 5f;
     [SerializeField] private LayerMask layerObject;
     [SerializeField] private LayerMask layerNPC;
     [SerializeField] private LayerMask layerPutItem;
-    [SerializeField] private float distanceRaycast = 5f;
-    [SerializeField] private Vector3 offsetRaycast;
 
-    [SerializeField] private ObjectOutline currentObjectOutline;
-    [SerializeField] private ObjectOutline baseObjectOutline;
-
+    [Header("Item")]
     [SerializeField] private Transform itemContainer;
-
-
-    [Header("Show Raycast Settings")]
-    [SerializeField] private bool IsShowDebugRay = true;
-    [SerializeField] private Color colorRay = Color.red;
-
-    [SerializeField] private List<ObjectOutline> objOutlineList = new();
-    [field: SerializeField] public bool IsInteractingNPC { get; private set; } = false;
-    [field: SerializeField] public bool IsPutItem { get; private set; }
-    [SerializeField] private Vector3 putItemPos;
     [SerializeField] private Transform objPutItem;
 
+    [Header("Debug")]
+    [SerializeField] private bool showDebugRay = true;
+    [SerializeField] private Color rayColor = Color.red;
+
+    public bool IsInteractingNPC { get; private set; }
+    public bool IsPutItem { get; private set; }
+
+    private Vector3 rayCenter;
+    private Vector3 putItemPos;
+
+    [SerializeField] private ObjectOutline highlightedObject;
+    [SerializeField] private ObjectOutline holdingItem;
 
     private void Start()
     {
-        offsetRaycast = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        rayCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
     }
+
+    public void ShootRaycast()
+    {
+        if (!playerCamera) return;
+
+        Ray ray = playerCamera.ScreenPointToRay(rayCenter);
+
+        if (showDebugRay)
+            Debug.DrawRay(ray.origin, ray.direction * distanceRaycast, rayColor);
+
+        HandleObjectRay(ray);
+        HandleNPCRay(ray);
+        HandlePutItemRay(ray);
+    }
+
+    #region Raycast
+
+    private void HandleObjectRay(Ray ray)
+    {
+        if (Physics.Raycast(ray, out RaycastHit hit, distanceRaycast, layerObject))
+        {
+            ObjectOutline obj = hit.collider.GetComponent<ObjectOutline>();
+            SetHighlight(obj);
+        }
+        else
+        {
+            ClearHighlight();
+        }
+    }
+
+    private void HandleNPCRay(Ray ray)
+    {
+        IsInteractingNPC = Physics.Raycast(ray, distanceRaycast, layerNPC);
+    }
+
+    private void HandlePutItemRay(Ray ray)
+    {
+        if (!IsPutItem) return;
+
+        if (Physics.Raycast(ray, out RaycastHit hit, distanceRaycast, layerPutItem))
+        {
+            putItemPos = hit.point;
+            objPutItem = hit.transform;
+        }
+    }
+
+    #endregion
+
+    #region Item
 
     public void Pickup()
     {
         if (IsPutItem)
         {
-            var currentItem = objOutlineList[0];
-            currentItem.transform.SetParent(objPutItem, true);
-            CalculateOffset(currentItem);
-            IsPutItem = false;
+            PlaceItem();
             return;
         }
 
-        if (currentObjectOutline != null)
+        if (highlightedObject)
         {
-            objOutlineList.Add(currentObjectOutline);
-            currentObjectOutline.SetPickItem(itemContainer);
-            currentObjectOutline.ResetScale();
+            holdingItem = highlightedObject;
+            holdingItem.SetPickItem(itemContainer);
+            holdingItem.ResetScale();
             IsPutItem = true;
         }
     }
 
-    public void ShootRaycast()
+    private void PlaceItem()
     {
-        if (playerCamera == null)
-        {
-            Debug.LogWarning("PlayerInteract: playerCamera is not assigned.");
-            return;
-        }
-        Ray ray = playerCamera.ScreenPointToRay(offsetRaycast);
-
-        if (IsShowDebugRay)
-        {
-            Debug.DrawRay(ray.origin, ray.direction * distanceRaycast, colorRay);
-        }
-        RaycastObject(ray);
-        RaycastNPC(ray);
-        RaycastPutItem(ray);
-
+        //holdingItem.transform.SetParent(objPutItem, true);
+        AttachItem(holdingItem.transform, objPutItem);
+        ApplyOffset(holdingItem);
+        holdingItem = null;
+        IsPutItem = false;
     }
-    private void RaycastObject(Ray ray)
+    private void AttachItem(Transform item, Transform parent)
     {
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, distanceRaycast, layerObject))
-        {
-            currentObjectOutline = hitInfo.collider.GetComponent<ObjectOutline>();
-        }
-        else
-        {
-            if (currentObjectOutline != null && baseObjectOutline != null)
-            {
-                currentObjectOutline.SetLayerDefault();
-                currentObjectOutline = null;
-                baseObjectOutline.SetLayerDefault();
-                baseObjectOutline = null;
-            }
-
-        }
-        if (currentObjectOutline != null && baseObjectOutline == null)
-        {
-            currentObjectOutline.SetLayerOutline();
-            baseObjectOutline = currentObjectOutline;
-        }
-        if (currentObjectOutline != baseObjectOutline)
-        {
-            currentObjectOutline.SetLayerOutline();
-            baseObjectOutline.SetLayerDefault();
-            baseObjectOutline = null;
-        }
+        item.GetPositionAndRotation(out Vector3 pos, out Quaternion root);
+        Vector3 scale = item.lossyScale;
+        item.SetParent(parent);
+        item.SetPositionAndRotation(pos, root);
+        Vector3 parentScale = parent.lossyScale;
+        item.localScale = new(scale.x / parentScale.x, scale.y / parentScale.y, scale.z / parentScale.z);
     }
 
-    private void RaycastNPC(Ray ray)
+    private void ApplyOffset(ObjectOutline obj)
     {
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, distanceRaycast, layerNPC))
-        {
-            Debug.Log("Hit NPC: " + hitInfo.collider.name);
-            IsInteractingNPC = true;
-        }
-        else
-        {
-            IsInteractingNPC = false;
-        }
+        if (!obj.TryGetComponent(out Collider col)) return;
+
+        float yOffset = col.bounds.extents.y;
+        obj.transform.SetPositionAndRotation(
+            putItemPos + Vector3.up * yOffset,
+            Quaternion.identity
+        );
     }
-    private void RaycastPutItem(Ray ray)
+
+    #endregion
+
+    #region Outline
+
+    private void SetHighlight(ObjectOutline obj)
     {
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, distanceRaycast, layerPutItem))
-        {
-            Debug.Log($"Hit Put {hitInfo.point}");
-            putItemPos = hitInfo.point;
-            objPutItem = hitInfo.transform;
-        }
+        if (highlightedObject == obj) return;
+
+        ClearHighlight();
+        highlightedObject = obj;
+        highlightedObject?.SetLayerOutline();
     }
-    private void CalculateOffset(ObjectOutline obj)
+
+    private void ClearHighlight()
     {
-        float yOffset = 0f;
-        Collider itemCol = obj.GetComponent<Collider>();
-        {
-            if (itemCol != null)
-            {
-                yOffset = itemCol.bounds.extents.y;
-            }
-        }
-        obj.transform.SetPositionAndRotation(putItemPos + (Vector3.up * yOffset), Quaternion.identity);
+        if (!highlightedObject) return;
+
+        highlightedObject.SetLayerDefault();
+        highlightedObject = null;
     }
+
+    #endregion
 }
