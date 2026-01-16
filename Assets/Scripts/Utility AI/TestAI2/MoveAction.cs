@@ -11,10 +11,14 @@ public class MoveAction : BaseState
     private readonly IRotate rotate;
     public MoveAction(FsmContext context, Transform target,Transform current)
     {
-        agent = context.Mover;
-        animator = context.Controller;
+        agent = context.GetIdentity<NavMeshMover>();
+        if(agent !=null) Debug.Log("Agent found".ToColor(Color.yellow));
+      
+        animator = context.GetIdentity<AnimatorController>();
+        if (animator != null) Debug.Log("animator found".ToColor(Color.yellow));
         chairPos = target;
-        rotate = context.Rotate;
+        rotate = context.GetIdentity<TranformRotate>();
+        if (rotate != null) Debug.Log("rotate found".ToColor(Color.yellow));
         this.current = current;
     }
 

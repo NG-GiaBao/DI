@@ -27,11 +27,12 @@ public class NPCBehavior : MonoBehaviour
         NavMeshMover mover = new(agent);
         AnimatorController controller = new(animator);
         TranformRotate tranformRotate = new(this.transform,chairPos);
-        context = new FsmContext(mover,controller,tranformRotate);
+        context = new FsmContext();
+        context.RegisterIdentity(mover);
+        context.RegisterIdentity(controller);
+        context.RegisterIdentity(tranformRotate);
+        //context = new FsmContext(mover,controller,tranformRotate);
         fsm.Register(NameAction.Move,new MoveAction(context,chairPos,this.transform));
         fsm.Register(NameAction.Idle, new IdleAction());
-
     }
-
-
 }

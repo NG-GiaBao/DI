@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class TranformRotate : IRotate
+public class TranformRotate : IRotate , IFsmIdentity
 {
     private readonly Transform current;
     private readonly Transform target;

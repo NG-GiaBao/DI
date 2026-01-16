@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class AnimatorController : IAnimationController
+public class AnimatorController : IAnimationController , IFsmIdentity
 {
     private readonly Animator animator;
 

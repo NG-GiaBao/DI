@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class Register
 {
     private static readonly Dictionary<Type, Component> mapRef = new();
     private static readonly Dictionary<Type, Action<Component>> actionRef = new();
+    private static readonly List<BaseInject> baseInjects = new();
 
     public static void RegisterRef<T>(T component) where T : Component
     {
@@ -23,6 +25,18 @@ public static class Register
             action?.Invoke(component);
             actionRef.Remove(type);
         }
+    }
+
+    public static void RegisterInject(BaseInject baseInject)
+    {
+        if (!baseInjects.Contains(baseInject))
+        {
+            baseInjects.Add(baseInject);
+        }
+    }
+    public static List<BaseInject> GetAllInject()
+    {
+        return baseInjects;
     }
     public static void GetRef<T>(Action<T> action) where T : Component
     {

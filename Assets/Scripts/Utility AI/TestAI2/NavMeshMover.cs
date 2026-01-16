@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class NavMeshMover : IMover
+public class NavMeshMover : IMover , IFsmIdentity
 {
     private readonly NavMeshAgent agent;
 

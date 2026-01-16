@@ -1,5 +1,10 @@
 ﻿using UnityEngine;
 
+public interface IFsmIdentity
+{
+
+}
+
 public interface IMover
 {
     void MoveTo(Vector3 position);

@@ -1,21 +1,18 @@
-﻿using UnityEngine;
-
+﻿
 public class DialogViewController : BaseUiController<DialogView>
 {
-    private DialogSO dialogSO;
     public override void OnShow(object data)
     {
         base.OnShow(data);
-        if(data is DialogSO dialogSO)
+        if (data is string dialog)
         {
-            this.dialogSO = dialogSO;
-            view.ChangeDialog(dialogSO.dialogLst[0]);
-        } 
-            
+            view.ChangeDialog(dialog);
+        }
+
     }
     public override void OnHide()
     {
         base.OnHide();
     }
-   
+
 }

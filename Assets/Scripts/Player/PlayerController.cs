@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-
-
-public class PlayerController : MonoBehaviour
+public class PlayerController : BaseInject
 {
     [SerializeField] private SerializableHashSet validTags;
     [Header("Player Behavior")]
@@ -28,12 +26,12 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         playerInteract = GetComponent<PlayerInteract>();
-        Register.RegisterRef<PlayerController>(this);
+        Register.RegisterInject(this);
     }
 
     private void Start()
     {
-        Init();
+        //Init();
         Subscrision();
     }
 
@@ -57,14 +55,11 @@ public class PlayerController : MonoBehaviour
         UnSubscrision();
     }
 
-   
-
-    public void OnInject(CoreContext context)
+    public override void OnInject(CoreContext coreContext)
     {
-        this.context = context;
+        this.context = coreContext;
     }
-
-    private void Init()
+    public override void OnInit()
     {
         if (characterController != null)
         {
@@ -75,8 +70,19 @@ public class PlayerController : MonoBehaviour
         {
             playerAnim.GetAnimator(animator);
         }
-
     }
+
+
+    //public void OnInject(CoreContext context)
+    //{
+    //    
+    //}
+
+    //private void Init()
+    //{
+    //   
+
+    //}
 
     #region Input Methods
     public void OnMove(InputValue value)
@@ -141,6 +147,21 @@ public class PlayerController : MonoBehaviour
     {
         playerAnim.UpdateAnimMove(playerMove.IsMoving);
     }
+
+    //public void Init()
+    //{
+    //    if (characterController != null)
+    //    {
+    //        playerJump.GetController(characterController);
+    //        playerMove.GetController(characterController);
+    //    }
+    //    if (animator != null)
+    //    {
+    //        playerAnim.GetAnimator(animator);
+    //    }
+    //}
+
+
 
     #endregion
 }

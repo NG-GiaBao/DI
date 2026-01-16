@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class EventBus
 {
     private readonly Dictionary<Type, List<Delegate>> eventTable = new();
@@ -15,6 +16,13 @@ public class EventBus
     public IReadOnlyDictionary<Type, object> DebugLastEventData => lastEventData;
     public IReadOnlyList<PublishRecord> DebugPublishHistory => publishHistory;
 #endif
+    /// <summary>
+    /// Quản lý việc phát và xử lý sự kiện.
+    /// </summary>
+    /// </typeparam>
+    /// <typeparam name="TEvent">
+    /// Kiểu dữ liệu của sự kiện được phát ( struct hoặc C# Poco)
+    /// </typeparam>
     public void Subscribe<TEvent>(Action<TEvent> funtion)
     {
         Type eventType = typeof(TEvent);
@@ -37,7 +45,13 @@ public class EventBus
             }
         }
     }
-
+    /// <summary>
+    /// Quản lý việc phát và xử lý sự kiện.
+    /// </summary>
+    /// </typeparam>
+    /// <typeparam name="TEvent">
+    /// Kiểu dữ liệu của sự kiện được phát ( struct hoặc C# Poco)
+    /// </typeparam>
     public void Unsubscribe<TEvent>(Action<TEvent> listener)
     {
         Type eventType = typeof(TEvent);

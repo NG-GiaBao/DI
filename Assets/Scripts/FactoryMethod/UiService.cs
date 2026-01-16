@@ -16,6 +16,12 @@ public class UiService
         this.mainCanvas = mainCanvas;
     }
 
+    /// <summary>
+    /// Hiển thị view lên UI
+    /// </summary>
+    /// <typeparam name="TController">
+    /// Controller của view đó ( Class )
+    /// </typeparam>
     public void Show<TController>(object data = null) where TController : IUiController , new()
     {
         Type controllerType = typeof(TController);

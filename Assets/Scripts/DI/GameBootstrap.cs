@@ -1,55 +1,45 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameBootstrap : MonoBehaviour
 {
     [Header("Reference")]
     [Space()]
-    [SerializeField] private PlayerController player;
-    [SerializeField] private EventBusDebugger debugger;
-    [SerializeField] private GameManager gameManager;
-    [SerializeField] private DialogManager dialogManager;
     [SerializeField] private Transform mainCanvas;
 
-    [Header("Systems")]
-    [Space()]
-    [SerializeField] private CoreContext _core;
+    [SerializeField] private List<BaseInject> injectables;
+
+    private CoreContext _core;
 
     private void Awake()
     {
-        OnGetAllRef();
         OnInitialized();
+       
     }
     private void Start()
     {
-        OnInjectComp();
+        GetListInject();
+        foreach (var inj in injectables)
+        {
+            inj.OnInject(_core);
+            inj.OnInit();
+
+        }
     }
-    
+
     private void OnInitialized()
     {
         _core = new CoreContext(mainCanvas);
-    }
-    private void OnInjectComp()
-    {
-        debugger.OnInject(_core.Events);
-        gameManager.OnInject(_core.UiService,dialogManager);
-        gameManager.OnInit();
-        dialogManager.OnInject(_core);
-        dialogManager.OnInit();
-        player.OnInject(_core);
-      
+        if (_core != null)
+        {
+            Debug.Log("CoreContext initialized successfully.".ToColor(Color.green));
+        }
     }
 
-    private void OnGetAllRef()
+    private void GetListInject()
     {
-        Register.GetRef<PlayerController>(OnGetPlayer);
-        Register.GetRef<GameManager>(OnGetGameManager);
-        Register.GetRef<EventBusDebugger>(OnGetEventBusDebugger);
-        Register.GetRef<DialogManager>(OnGetDialogObejct);
-        
-    }
-    private void OnGetPlayer(PlayerController player) => this.player = player;
-    private void OnGetGameManager(GameManager gameManager) => this.gameManager = gameManager;
-    private void OnGetEventBusDebugger(EventBusDebugger debugger) => this.debugger = debugger;
-    private void OnGetDialogObejct(DialogManager dialogManager) => this.dialogManager = dialogManager;
+        injectables = new List<BaseInject>(Register.GetAllInject());
+    }    
+   
 
 }
