@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class AnimatorController : IAnimationController , IFsmIdentity
+public class AnimatorController : IAnimationController, IFsmIdentity
 {
     private readonly Animator animator;
 
@@ -8,13 +8,26 @@ public class AnimatorController : IAnimationController , IFsmIdentity
     {
         this.animator = animator;
     }
-    public void SetRun(bool value)
+
+    public bool IsAnimFinished(string name)
     {
-        animator.SetBool("Run", value);
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (stateInfo.IsName(name) && stateInfo.normalizedTime >= 1f)
+        {
+            Debug.Log($"Animation {name} finished.".ToColor(this, Color.cyan));
+            return true;
+        }
+        return false;
     }
 
-    public void SetSit(bool value)
+    public void SetBool(string name, bool value)
     {
-        animator.SetBool("Sit", value);
+        animator.SetBool(name, value);
+    }
+
+    public void SetTrigger(string name)
+    {
+        animator.SetTrigger(name);
     }
 }

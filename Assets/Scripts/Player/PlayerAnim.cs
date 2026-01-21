@@ -18,6 +18,6 @@ public class PlayerAnim
 
     public void UpdateAnimMove(bool isMoving)
     {
-        animator.SetBool("Run", isMoving);
+        //animator.SetBool("Run", isMoving);
     }
 }

@@ -35,11 +35,7 @@ public class GameManager : BaseInject
     {
         uiService = coreContext.UiService;
         eventBus = coreContext.Events;
-        if (uiService != null)
-        {
-            Debug.Log("UiService initialized successfully.".ToColor(Color.green));
-
-        }
+        if (uiService == null) Debug.Log("UiService initialized falled.".ToColor(this, Color.red));
     }
     private void SendEventGameStart()
     {

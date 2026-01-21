@@ -8,7 +8,7 @@ public class IdleAction : BaseState
 
     public override void Enter()
     {
-        Debug.Log("Idle enter");
+
     }
 
     public override void Exit()

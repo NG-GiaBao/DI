@@ -31,7 +31,6 @@ public class PlayerController : BaseInject
 
     private void Start()
     {
-        //Init();
         Subscrision();
     }
 
@@ -71,18 +70,6 @@ public class PlayerController : BaseInject
             playerAnim.GetAnimator(animator);
         }
     }
-
-
-    //public void OnInject(CoreContext context)
-    //{
-    //    
-    //}
-
-    //private void Init()
-    //{
-    //   
-
-    //}
 
     #region Input Methods
     public void OnMove(InputValue value)
@@ -147,21 +134,6 @@ public class PlayerController : BaseInject
     {
         playerAnim.UpdateAnimMove(playerMove.IsMoving);
     }
-
-    //public void Init()
-    //{
-    //    if (characterController != null)
-    //    {
-    //        playerJump.GetController(characterController);
-    //        playerMove.GetController(characterController);
-    //    }
-    //    if (animator != null)
-    //    {
-    //        playerAnim.GetAnimator(animator);
-    //    }
-    //}
-
-
 
     #endregion
 }

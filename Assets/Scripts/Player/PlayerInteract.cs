@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening.Core;
+using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
@@ -17,11 +18,11 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private bool showDebugRay = true;
     [SerializeField] private Color rayColor = Color.red;
 
-    public bool IsInteractingNPC { get; private set; }
-    public bool IsPutItem { get; private set; }
+    [field: SerializeField] public bool IsInteractingNPC { get; private set; }
+    [field: SerializeField] public bool IsPutItem { get; private set; }
 
     private Vector3 rayCenter;
-    private Vector3 putItemPos;
+    [SerializeField] private Vector3 putItemPos;
 
     [SerializeField] private ObjectOutline highlightedObject;
     [SerializeField] private ObjectOutline holdingItem;
@@ -88,7 +89,7 @@ public class PlayerInteract : MonoBehaviour
             return;
         }
 
-        if (highlightedObject)
+        if (highlightedObject != null)
         {
             holdingItem = highlightedObject;
             holdingItem.SetPickItem(itemContainer);
@@ -99,29 +100,32 @@ public class PlayerInteract : MonoBehaviour
 
     private void PlaceItem()
     {
-        //holdingItem.transform.SetParent(objPutItem, true);
-        AttachItem(holdingItem.transform, objPutItem);
-        ApplyOffset(holdingItem);
+        AttachItem();
+        ApplyOffset();
         holdingItem = null;
         IsPutItem = false;
     }
-    private void AttachItem(Transform item, Transform parent)
+    private void AttachItem()
     {
-        item.GetPositionAndRotation(out Vector3 pos, out Quaternion root);
-        Vector3 scale = item.lossyScale;
-        item.SetParent(parent);
-        item.SetPositionAndRotation(pos, root);
-        Vector3 parentScale = parent.lossyScale;
-        item.localScale = new(scale.x / parentScale.x, scale.y / parentScale.y, scale.z / parentScale.z);
+        holdingItem.transform.SetParent(objPutItem);
+        holdingItem.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        holdingItem.ResetScale();
+       
+       
     }
 
-    private void ApplyOffset(ObjectOutline obj)
+    private void ApplyOffset()
     {
-        if (!obj.TryGetComponent(out Collider col)) return;
+        if (!holdingItem.TryGetComponent(out Collider col)) return;
 
-        float yOffset = col.bounds.extents.y;
-        obj.transform.SetPositionAndRotation(
-            putItemPos + Vector3.up * yOffset,
+        // Cập nhật lại Transform cho Physics để đảm bảo Bounds đúng vị trí mới sau khi Attach
+        Physics.SyncTransforms();
+
+        // Tính khoảng cách từ Pivot đến đáy của Collider
+        float distanceToBottom = holdingItem.transform.position.y - col.bounds.min.y;
+
+        holdingItem.transform.SetPositionAndRotation(
+            putItemPos + Vector3.up * distanceToBottom,
             Quaternion.identity
         );
     }

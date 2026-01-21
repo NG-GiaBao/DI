@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 
-public interface IFsmIdentity
-{
+public interface IFsmIdentity { }
 
-}
 
 public interface IMover
 {
@@ -16,8 +14,9 @@ public interface IMover
 
 public interface IAnimationController
 {
-    void SetRun(bool value);
-    void SetSit(bool value);
+    void SetTrigger(string name);
+    void SetBool(string name, bool value);
+    bool IsAnimFinished(string name);
 }
 public interface IRotate
 {

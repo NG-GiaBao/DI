@@ -22,7 +22,7 @@ public class PlayerLook
         pitch -= input.y * sensitivity;
         pitch = Mathf.Clamp(pitch, -playerViewAngle, playerViewAngle);
         player.localRotation = Quaternion.Euler(0, yaw, 0);
-        camera.localRotation = Quaternion.Euler(-pitch, 0, 0);
+        camera.localRotation = Quaternion.Euler(pitch, 0, 0);
 
     }
 }

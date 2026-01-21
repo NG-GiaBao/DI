@@ -2,9 +2,9 @@
 
 public static class DebugLogHelper
 {
-    public static string ToColor(this string message, Color color)
+    public static string ToColor(this string message,object nameObj, Color color)
     {
-        return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{message}</color>";
+        return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{nameObj.GetType().Name}.{message}</color>";
     }
 }
 

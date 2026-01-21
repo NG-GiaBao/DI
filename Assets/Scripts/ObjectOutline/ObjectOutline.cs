@@ -9,7 +9,7 @@ public class ObjectOutline : MonoBehaviour
     private void Awake()
     {
         Register.RegisterRef<ObjectOutline>(this);
-        initialScale = transform.localScale;
+        initialScale = transform.lossyScale;
     }
     public void SetLayerOutline()
     {
@@ -35,7 +35,7 @@ public class ObjectOutline : MonoBehaviour
     public void ResetScale()
     {
         transform.localScale = initialScale;
-    }    
+    }
 
 
 }

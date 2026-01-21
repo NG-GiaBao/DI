@@ -31,8 +31,7 @@ public class NPCBehavior : MonoBehaviour
         context.RegisterIdentity(mover);
         context.RegisterIdentity(controller);
         context.RegisterIdentity(tranformRotate);
-        //context = new FsmContext(mover,controller,tranformRotate);
-        fsm.Register(NameAction.Move,new MoveAction(context,chairPos,this.transform));
+        fsm.Register(NameAction.Move,new MoveAction(context,chairPos));
         fsm.Register(NameAction.Idle, new IdleAction());
     }
 }

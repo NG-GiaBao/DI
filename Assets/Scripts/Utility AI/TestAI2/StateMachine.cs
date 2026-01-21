@@ -27,6 +27,7 @@ public class StateMachine
     }
     public void Tick()
     {
+        if (CurrentState == null) return;
         var next = CurrentState.Update();
         if (next.HasValue)
         {
